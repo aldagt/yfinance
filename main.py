@@ -1,19 +1,20 @@
 from fastapi import FastAPI
-import yfinance as yf
+from forward_pe import get_forward_pe
+from prices import get_stock_price
+
 
 app = FastAPI()
 
 @app.get("/forward-pe/{ticker}")
-def get_forward_pe(ticker: str):
-    stock = yf.Ticker(ticker.upper())
-
-    pe = None
+def forward_pe(ticker: str):
     try:
-        pe = stock.fast_info.get("forwardPE")
+        fpe = get_forward_pe(ticker)
+        price = get_stock_price(ticker)
     except:
         pass
 
     return {
         "ticker": ticker.upper(),
-        "forwardPE": pe
+        "price": price,
+        "forwardPE": fpe
     }
